@@ -1,8 +1,9 @@
 import { Router, type Request, type Response } from "express";
 import { userController } from "./user.controller";
+import adminAuth from "../../middlewares/adminAuth";
 
 const router = Router()
 
-router.get("/", userController.allUsers)
+router.get("/", adminAuth ,userController.allUsers)
 
 export const userRoute = router

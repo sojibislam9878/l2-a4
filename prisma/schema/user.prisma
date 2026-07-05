@@ -2,12 +2,13 @@ model User {
     id String @id @default(uuid())
     name String @db.VarChar(255)
     email String @unique
-    password String @db.VarChar(255)
-    activeStatus ActiveStatus @default(ACTIVE)
-    role Role @default(USER)
+    hashed_password String @db.VarChar(500)
+    phone_no String @db.VarChar(20)
+    role Role @default(customer)
+    status ActiveStatus @default(active)
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
-    profile Profile?
+    profile TechnicianProfile?
 
     @@map("users")
 }

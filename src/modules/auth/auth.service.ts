@@ -1,7 +1,7 @@
 import { jtwUtils } from './../../../utils/jwt';
 import bcrypt  from 'bcrypt';
 import { prisma } from "../../lib/prisma";
-import type { ILogInPayload } from "./auth.interface";
+import type { ILogInPayload, IRegisterUserPayload } from "./auth.interface";
 import envConfig from '../../config/envConfiq';
 import type { SignOptions } from 'jsonwebtoken';
 
@@ -18,20 +18,53 @@ const userLogInDB = async (payload: ILogInPayload) => {
 
   const isPasswordMatched = await bcrypt.compare(
     payload.password,
-    user.password,
+    user.hashed_password,
   );
 
   if (!isPasswordMatched) {
     throw new Error("Invalid credentials");
   }
 
-  const { password , ...userWithoutPassword} = user
-  const accessToken = jtwUtils.createToken(user, envConfig.jwt_access_secret, {expiresIn: envConfig.jwt_access_expires_in} as SignOptions)
-  const refreshToken = jtwUtils.createToken(user, envConfig.jwt_refresh_secret, {expiresIn: envConfig.jwt_refresh_expires_in} as SignOptions)
-  return  {accessToken, refreshToken, userWithoutPassword}
+  const { hashed_password , ...userWithoutPassword} = user
+  const accessToken = jtwUtils.createToken(userWithoutPassword, envConfig.jwt_access_secret, {expiresIn: envConfig.jwt_access_expires_in} as SignOptions)
+  return  {accessToken, userWithoutPassword}
+};
+
+const registerUserDB = async (payload: IRegisterUserPayload) => {
+  const hashedPassword = await bcrypt.hash(
+    payload.password,
+    Number(envConfig.bcrypt_salt_rounds),
+  );
+  const { password, ...rest } = payload;
+  const result = await prisma.user.create({
+    data: {
+      ...rest,
+      hashed_password: hashedPassword,
+    },
+  });
+
+  const { hashed_password, ...userWithoutPassword } = result;
+  return userWithoutPassword;
+};
+
+const getMeDB = async (userId: string) => {
+  const user = await prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+  });
+
+  if (!user) {
+    throw new Error("User not exist");
+  }
+
+  const { hashed_password, ...userWithoutPassword } = user;
+  return userWithoutPassword;
 };
 
 
 export const authService = {
-    userLogInDB
+    userLogInDB,
+    registerUserDB,
+    getMeDB
 }

@@ -2,13 +2,15 @@ model User {
     id String @id @default(uuid())
     name String @db.VarChar(255)
     email String @unique
-    hashed_password String @db.VarChar(500)
+    hashed_password String
     phone_no String @db.VarChar(20)
     role Role @default(customer)
     status ActiveStatus @default(active)
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
-    profile TechnicianProfile?
+    technician_profile TechnicianProfile?
+    review Review[]
+    booking Booking[]
 
     @@map("users")
 }

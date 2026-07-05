@@ -1,0 +1,17 @@
+model Booking {
+    id String @id @default(uuid())
+    user User @relation(fields: [customer_id], references: [id])
+    customer_id String
+    technician TechnicianProfile @relation(fields: [technician_id], references: [id])
+    technician_id String
+    service Service @relation(fields: [service_id], references: [id])
+    service_id String
+    scheduled_at DateTime
+    address String @db.VarChar(255)
+    note String
+    created_at DateTime @default(now())
+    review Review[]
+    payment Payment?
+
+    @@map("bookings")
+}

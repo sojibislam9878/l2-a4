@@ -1,0 +1,9 @@
+model Category {
+    id String @id @default(uuid())
+    name String @db.VarChar(255) @unique
+    description String
+    created_at DateTime @default(now())
+    service Service[]
+
+    @@map("categories")
+}

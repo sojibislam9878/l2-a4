@@ -7,3 +7,9 @@ enum Role{
     technician
     admin
 }
+
+enum Status {
+    failed
+    pending
+    completed
+}

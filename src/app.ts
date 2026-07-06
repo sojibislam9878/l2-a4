@@ -12,6 +12,7 @@ import { serviceRoute } from "./modules/service/service.route";
 import { technicianRoute, technicianManagementRoute } from "./modules/technician/technician.route";
 import { categoryRoute } from "./modules/category/category.route";
 import { bookingRoute } from "./modules/booking/booking.route";
+import { reviewRoute } from "./modules/review/review.route";
 import globalErrorHandler from "./middlewares/globalErrorHandler";
 const app: Application = express();
 
@@ -31,6 +32,7 @@ app.use("/api/technicians", technicianRoute);
 app.use("/api/technician", technicianManagementRoute);
 app.use("/api/categories", categoryRoute);
 app.use("/api/bookings", bookingRoute);
+app.use("/api/reviews", reviewRoute);
 
 app.use((_req: Request, res: Response) => {
   res.status(404).json({

@@ -15,6 +15,22 @@ const getServices = async (req: Request, res: Response, next: NextFunction) => {
     }
 }
 
+const createService = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const userId = (req as Request & { user?: { id: string } }).user!.id
+        const result = await servicesService.createServiceDb(userId, req.body)
+
+        res.status(201).json({
+            status: 201,
+            message: "service created successfully",
+            data: result,
+        })
+    } catch (error) {
+        next(error)
+    }
+}
+
 export const serviceController = {
-    getServices
+    getServices,
+    createService
 }

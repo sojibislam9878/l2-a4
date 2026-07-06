@@ -1,0 +1,12 @@
+model Availability {
+    id String @id @default(uuid())
+    technician TechnicianProfile @relation(fields: [technician_id], references: [id])
+    technician_id String
+    day WeekDay
+    start_time String @db.VarChar(5)
+    end_time String @db.VarChar(5)
+    created_at DateTime @default(now())
+
+    @@unique([technician_id, day, start_time])
+    @@map("availabilities")
+}

@@ -123,10 +123,31 @@ const updateBookingStatus = async (
   }
 };
 
+const updateAvailability = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const userId = (req as Request & { user?: { id: string } }).user!.id;
+    const { slots } = req.body;
+    const result = await technicianService.updateAvailabilityDb(userId, slots);
+
+    res.status(200).json({
+      status: 200,
+      message: "availability updated successfully",
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const technicianController = {
   getTechnicians,
   getTechnicianById,
   updateProfile,
   getTechnicianBookings,
   updateBookingStatus,
+  updateAvailability,
 };

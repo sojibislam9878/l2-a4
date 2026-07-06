@@ -8,7 +8,7 @@ model Booking {
     service_id String
     scheduled_at DateTime
     address String @db.VarChar(255)
-    note String
+    note String?
     status BookingStatus @default(pending)
     created_at DateTime @default(now())
     review Review[]

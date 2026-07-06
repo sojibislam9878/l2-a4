@@ -18,6 +18,12 @@ managementRouter.put(
   authorize("technician"),
   technicianController.updateProfile,
 );
+managementRouter.put(
+  "/availability",
+  auth,
+  authorize("technician"),
+  technicianController.updateAvailability,
+);
 managementRouter.get(
   "/bookings",
   auth,

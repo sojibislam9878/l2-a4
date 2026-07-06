@@ -11,6 +11,7 @@ model TechnicianProfile {
     review Review[]
     booking Booking[]
     service Service[]
+    availability Availability[]
 
     @@map("technician_profiles")
 }

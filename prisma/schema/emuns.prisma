@@ -20,3 +20,13 @@ enum BookingStatus {
     declined
     completed
 }
+
+enum WeekDay {
+    sunday
+    monday
+    tuesday
+    wednesday
+    thursday
+    friday
+    saturday
+}

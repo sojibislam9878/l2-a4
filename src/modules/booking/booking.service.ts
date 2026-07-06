@@ -6,14 +6,22 @@ const createBookingDb = async (
   customerId: string,
   payload: ICreateBookingPayload,
 ) => {
+  const service = await prisma.service.findUnique({
+    where: { id: payload.service_id },
+  });
+
+  if (!service) {
+    throw new AppError(404, "Service not found");
+  }
+
   const result = await prisma.booking.create({
     data: {
       customer_id: customerId,
-      technician_id: payload.technician_id,
-      service_id: payload.service_id,
+      technician_id: service.technician_id,
+      service_id: service.id,
       scheduled_at: new Date(payload.scheduled_at),
       address: payload.address,
-      note: payload.note,
+      ...(payload.note !== undefined && { note: payload.note }),
     },
   });
 

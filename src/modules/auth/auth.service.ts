@@ -5,6 +5,20 @@ import type { ILogInPayload, IRegisterUserPayload } from "./auth.interface";
 import envConfig from "../../config/envConfiq";
 import type { SignOptions } from "jsonwebtoken";
 import AppError from "../../../utils/AppError";
+import type { WeekDay } from "../../../generated/prisma/client";
+
+// default weekly schedule given to a technician on registration (Sun–Thu, 9am–5pm)
+const defaultAvailability: {
+  day: WeekDay;
+  start_time: string;
+  end_time: string;
+}[] = [
+  { day: "sunday", start_time: "09:00", end_time: "17:00" },
+  { day: "monday", start_time: "09:00", end_time: "17:00" },
+  { day: "tuesday", start_time: "09:00", end_time: "17:00" },
+  { day: "wednesday", start_time: "09:00", end_time: "17:00" },
+  { day: "thursday", start_time: "09:00", end_time: "17:00" },
+];
 
 const userLogInDB = async (payload: ILogInPayload) => {
   const user = await prisma.user.findUnique({
@@ -59,10 +73,17 @@ const registerUserDB = async (payload: IRegisterUserPayload) => {
       },
     });
 
-    // technicians get an empty profile to fill in later via PUT /technician/profile
+    // technicians get an empty profile + a default weekly schedule to edit later
     if (userRole === "technician") {
-      await tx.technicianProfile.create({
+      const profile = await tx.technicianProfile.create({
         data: { user_id: user.id },
+      });
+
+      await tx.availability.createMany({
+        data: defaultAvailability.map((slot) => ({
+          technician_id: profile.id,
+          ...slot,
+        })),
       });
     }
 

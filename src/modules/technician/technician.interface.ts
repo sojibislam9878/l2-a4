@@ -15,3 +15,13 @@ export interface IUpdateTechnicianProfilePayload {
     experience_year?: number;
     hourly_rate?: number;
 }
+
+export interface IAvailabilitySlot {
+    day: string;
+    start_time: string;
+    end_time: string;
+}
+
+export interface IUpdateAvailabilityPayload {
+    slots: IAvailabilitySlot[];
+}

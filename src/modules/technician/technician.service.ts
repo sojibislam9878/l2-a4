@@ -1,7 +1,22 @@
-import { Prisma } from "../../../generated/prisma/client";
+import { Prisma, type BookingStatus } from "../../../generated/prisma/client";
 import { prisma } from "../../lib/prisma";
-import type { ITechnicianFilters } from "./technician.interface";
+import type {
+  ITechnicianFilters,
+  IUpdateTechnicianProfilePayload,
+} from "./technician.interface";
 import AppError from "../../../utils/AppError";
+
+const getProfileByUserId = async (userId: string) => {
+  const profile = await prisma.technicianProfile.findUnique({
+    where: { user_id: userId },
+  });
+
+  if (!profile) {
+    throw new AppError(404, "Technician profile not found");
+  }
+
+  return profile;
+};
 
 const getTechniciansFormDb = async (filters: ITechnicianFilters) => {
   const {
@@ -122,7 +137,82 @@ const getTechnicianByIdFromDb = async (id: string) => {
   return technician;
 };
 
+const updateTechnicianProfileDb = async (
+  userId: string,
+  payload: IUpdateTechnicianProfilePayload,
+) => {
+  await getProfileByUserId(userId);
+
+  const result = await prisma.technicianProfile.update({
+    where: { user_id: userId },
+    data: {
+      ...(payload.bio !== undefined && { bio: payload.bio }),
+      ...(payload.skills !== undefined && { skills: payload.skills }),
+      ...(payload.experience_year !== undefined && {
+        experience_year: Number(payload.experience_year),
+      }),
+      ...(payload.hourly_rate !== undefined && {
+        hourly_rate: Number(payload.hourly_rate),
+      }),
+    },
+  });
+
+  return result;
+};
+
+const getTechnicianBookingsDb = async (userId: string) => {
+  const profile = await getProfileByUserId(userId);
+
+  const data = await prisma.booking.findMany({
+    where: { technician_id: profile.id },
+    orderBy: { created_at: "desc" },
+    include: {
+      user: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          phone_no: true,
+        },
+      },
+      service: true,
+    },
+  });
+
+  return data;
+};
+
+const updateBookingStatusDb = async (
+  userId: string,
+  bookingId: string,
+  status: BookingStatus,
+) => {
+  const profile = await getProfileByUserId(userId);
+
+  const booking = await prisma.booking.findUnique({
+    where: { id: bookingId },
+  });
+
+  if (!booking) {
+    throw new AppError(404, "Booking not found");
+  }
+
+  if (booking.technician_id !== profile.id) {
+    throw new AppError(403, "You are not allowed to update this booking");
+  }
+
+  const result = await prisma.booking.update({
+    where: { id: bookingId },
+    data: { status },
+  });
+
+  return result;
+};
+
 export const technicianService = {
   getTechniciansFormDb,
   getTechnicianByIdFromDb,
+  updateTechnicianProfileDb,
+  getTechnicianBookingsDb,
+  updateBookingStatusDb,
 };

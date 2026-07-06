@@ -9,7 +9,7 @@ import cookieParser from "cookie-parser";
 import { userRoute } from "./modules/user/user.routes";
 import { authRoute } from "./modules/auth/auth.routes";
 import { serviceRoute } from "./modules/service/service.route";
-import { technicianRoute } from "./modules/technician/technician.route";
+import { technicianRoute, technicianManagementRoute } from "./modules/technician/technician.route";
 import { categoryRoute } from "./modules/category/category.route";
 import { bookingRoute } from "./modules/booking/booking.route";
 import globalErrorHandler from "./middlewares/globalErrorHandler";
@@ -28,6 +28,7 @@ app.use("/api/auth", authRoute);
 app.use("/api/users", userRoute);
 app.use("/api/services", serviceRoute);
 app.use("/api/technicians", technicianRoute);
+app.use("/api/technician", technicianManagementRoute);
 app.use("/api/categories", categoryRoute);
 app.use("/api/bookings", bookingRoute);
 

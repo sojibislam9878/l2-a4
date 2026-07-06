@@ -8,3 +8,10 @@ export interface ITechnicianFilters {
     sortBy?: string;
     sortOrder?: string;
 }
+
+export interface IUpdateTechnicianProfilePayload {
+    bio?: string;
+    skills?: string;
+    experience_year?: number;
+    hourly_rate?: number;
+}

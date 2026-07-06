@@ -17,7 +17,7 @@ const createPaymentDb = async (customerId: string, bookingId: string) => {
         throw new AppError(403, "You are not allowed to pay for this booking");
     }
 
-    if (booking.status !== "accepted") {
+    if (booking.status !== "accept") {
         throw new AppError(400, "You can only pay for an accepted booking");
     }
 

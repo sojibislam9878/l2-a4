@@ -24,7 +24,7 @@ const createReviewDb = async (
     throw new AppError(403, "You are not allowed to review this booking");
   }
 
-  if (booking.status !== "completed") {
+  if (booking.status !== "complete") {
     throw new AppError(400, "You can only review after the job is completed");
   }
 
@@ -41,6 +41,7 @@ const createReviewDb = async (
       booking_id,
       customer_id: customerId,
       technician_id: booking.technician_id,
+      service_id: booking.service_id,
       rating,
       comment,
     },

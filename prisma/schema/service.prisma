@@ -9,6 +9,7 @@ model Service {
     price Decimal @db.Decimal(8,0)
     created_at DateTime @default(now())
     booking Booking[]
+    review Review[]
 
     @@map("services")
 }

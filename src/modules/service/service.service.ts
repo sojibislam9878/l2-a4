@@ -18,6 +18,13 @@ const getServicesFromDb = async () => {
                     },
                 },
             },
+            review: {
+                select: {
+                    rating: true,
+                    comment: true,
+                    customer_id: true,
+                },
+            },
         },
     });
 

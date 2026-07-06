@@ -95,15 +95,11 @@ const updateBookingStatus = async (
     const { id } = req.params;
     const { status } = req.body as { status: BookingStatus };
 
-    const allowedStatus: BookingStatus[] = [
-      "accepted",
-      "declined",
-      "completed",
-    ];
+    const allowedStatus: BookingStatus[] = ["accept", "decline", "complete"];
     if (!status || !allowedStatus.includes(status)) {
       throw new AppError(
         400,
-        "Invalid status. Allowed: accepted, declined, completed",
+        "Invalid status. Allowed: accept, decline, complete",
       );
     }
 

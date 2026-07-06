@@ -6,6 +6,8 @@ model Review {
     customer_id String
     technician TechnicianProfile @relation(fields: [technician_id], references: [id])
     technician_id String
+    service Service @relation(fields: [service_id], references: [id])
+    service_id String
     rating Int
     comment String
     created_at DateTime @default(now())

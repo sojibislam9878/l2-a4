@@ -16,9 +16,9 @@ enum Status {
 
 enum BookingStatus {
     pending
-    accepted
-    declined
-    completed
+    accept
+    decline
+    complete
 }
 
 enum WeekDay {

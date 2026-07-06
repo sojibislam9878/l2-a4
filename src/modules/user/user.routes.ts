@@ -1,4 +1,4 @@
-import { Router, type Request, type Response } from "express";
+import { Router} from "express";
 import { userController } from "./user.controller";
 import adminAuth from "../../middlewares/adminAuth";
 

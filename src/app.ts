@@ -4,6 +4,8 @@ import envConfig from "./config/envConfiq";
 import cookieParser from "cookie-parser";
 import { userRoute } from "./modules/user/user.routes";
 import { authRoute } from "./modules/auth/auth.routes";
+import { serviceRoute } from "./modules/service/service.route";
+import { technicianRoute } from "./modules/technician/technician.route";
 const app: Application = express();
 
 
@@ -18,5 +20,7 @@ app.get("/", (req: Request, res: Response) => {
 
 app.use("/api/auth", authRoute)
 app.use("/api/users", userRoute)
+app.use("/api/services", serviceRoute)
+app.use("/api/technicians", technicianRoute)
 
 export default app

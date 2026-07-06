@@ -4,6 +4,7 @@ import { prisma } from "../../lib/prisma";
 import type { ILogInPayload, IRegisterUserPayload } from "./auth.interface";
 import envConfig from '../../config/envConfiq';
 import type { SignOptions } from 'jsonwebtoken';
+import AppError from '../../../utils/AppError';
 
 const userLogInDB = async (payload: ILogInPayload) => {
   const user = await prisma.user.findUnique({
@@ -13,7 +14,7 @@ const userLogInDB = async (payload: ILogInPayload) => {
   });
 
   if (!user) {
-    throw new Error("User not exist");
+    throw new AppError(404, "User not exist");
   }
 
   const isPasswordMatched = await bcrypt.compare(
@@ -22,7 +23,7 @@ const userLogInDB = async (payload: ILogInPayload) => {
   );
 
   if (!isPasswordMatched) {
-    throw new Error("Invalid credentials");
+    throw new AppError(401, "Invalid credentials");
   }
 
   const { hashed_password , ...userWithoutPassword} = user
@@ -55,7 +56,7 @@ const getMeDB = async (userId: string) => {
   });
 
   if (!user) {
-    throw new Error("User not exist");
+    throw new AppError(404, "User not exist");
   }
 
   const { hashed_password, ...userWithoutPassword } = user;

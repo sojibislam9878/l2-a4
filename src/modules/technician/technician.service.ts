@@ -1,6 +1,7 @@
 import { Prisma } from "../../../generated/prisma/client";
 import { prisma } from "../../lib/prisma";
 import type { ITechnicianFilters } from "./technician.interface";
+import AppError from "../../../utils/AppError";
 
 const getTechniciansFormDb = async (filters: ITechnicianFilters) => {
   const {
@@ -115,7 +116,7 @@ const getTechnicianByIdFromDb = async (id: string) => {
   });
 
   if (!technician) {
-    throw new Error("Technician not found");
+    throw new AppError(404, "Technician not found");
   }
 
   return technician;

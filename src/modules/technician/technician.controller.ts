@@ -1,8 +1,8 @@
-import type { Request, Response } from "express"
+import type { NextFunction, Request, Response } from "express"
 import { technicianService } from "./technician.service"
 import type { ITechnicianFilters } from "./technician.interface"
 
-const getTechnicians = async (req: Request, res: Response) => {
+const getTechnicians = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const filters = req.query as ITechnicianFilters
         const result = await technicianService.getTechniciansFormDb(filters)
@@ -13,16 +13,11 @@ const getTechnicians = async (req: Request, res: Response) => {
             data: result,
         })
     } catch (error) {
-        console.log(error)
-        res.status(400).json({
-            status: 400,
-            message: "something wrong!!",
-            error: error,
-        })
+        next(error)
     }
 }
 
-const getTechnicianById = async (req: Request, res: Response) => {
+const getTechnicianById = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { id } = req.params
         const result = await technicianService.getTechnicianByIdFromDb(id as string)
@@ -33,12 +28,7 @@ const getTechnicianById = async (req: Request, res: Response) => {
             data: result,
         })
     } catch (error) {
-        console.log(error)
-        res.status(400).json({
-            status: 400,
-            message: "something wrong!!",
-            error: error,
-        })
+        next(error)
     }
 }
 

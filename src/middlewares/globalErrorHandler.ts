@@ -1,7 +1,9 @@
 import type { ErrorRequestHandler } from "express";
 import { Prisma } from "../../generated/prisma/client";
-import { JsonWebTokenError, TokenExpiredError } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import AppError from "../../utils/AppError";
+
+const { JsonWebTokenError, TokenExpiredError } = jwt;
 
 const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
     let statusCode = 500;

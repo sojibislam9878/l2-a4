@@ -5,8 +5,8 @@ model Payment {
     transaction_id String
     amount Decimal @db.Decimal(10,2)
     method String @db.VarChar(120)
-    status Status @default(failed)
-    paid_at DateTime
+    status Status @default(pending)
+    paid_at DateTime?
     created_at DateTime @default(now())
 
     @@map("payments")

@@ -1,0 +1,83 @@
+import type { NextFunction, Request, Response } from "express"
+import type Stripe from "stripe"
+import { paymentService } from "./payment.service"
+import { stripe } from "../../lib/stripe"
+import envConfig from "../../config/envConfiq"
+
+const createPayment = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const customerId = (req as Request & { user?: { id: string } }).user!.id
+        const { booking_id } = req.body
+
+        const result = await paymentService.createPaymentDb(customerId, booking_id)
+
+        res.status(201).json({
+            status: 201,
+            message: "payment session created successfully",
+            data: result,
+        })
+    } catch (error) {
+        next(error)
+    }
+}
+
+const confirmPayment = async (req: Request, res: Response) => {
+    const signature = req.headers["stripe-signature"] as string
+
+    let event: Stripe.Event
+    try {
+        event = stripe.webhooks.constructEvent(
+            req.body,
+            signature,
+            envConfig.stripe_webhook_key,
+        )
+    } catch (error) {
+        console.log("Webhook signature verification failed:", error)
+        return res.status(400).send("Webhook signature verification failed")
+    }
+
+    if (event.type === "checkout.session.completed") {
+        const session = event.data.object as Stripe.Checkout.Session
+        await paymentService.markPaymentPaidDb(session.id)
+    }
+
+    res.status(200).json({ received: true })
+}
+
+const getMyPayments = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const customerId = (req as Request & { user?: { id: string } }).user!.id
+        const result = await paymentService.getUserPaymentsDb(customerId)
+
+        res.status(200).json({
+            status: 200,
+            message: "payments fetched successfully",
+            data: result,
+        })
+    } catch (error) {
+        next(error)
+    }
+}
+
+const getPaymentById = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const customerId = (req as Request & { user?: { id: string } }).user!.id
+        const { id } = req.params
+        const result = await paymentService.getPaymentByIdDb(id as string, customerId)
+
+        res.status(200).json({
+            status: 200,
+            message: "payment fetched successfully",
+            data: result,
+        })
+    } catch (error) {
+        next(error)
+    }
+}
+
+export const paymentController = {
+    createPayment,
+    confirmPayment,
+    getMyPayments,
+    getPaymentById
+}

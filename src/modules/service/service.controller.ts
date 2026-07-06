@@ -1,7 +1,20 @@
-const getServices =()=>{
-try {
-    
-} catch (error) {
-    
+import type { NextFunction, Request, Response } from "express"
+import { servicesService } from "./service.service"
+
+const getServices = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const result = await servicesService.getServicesFromDb()
+
+        res.status(200).json({
+            status: 200,
+            message: "services fetched successfully",
+            data: result,
+        })
+    } catch (error) {
+        next(error)
+    }
 }
+
+export const serviceController = {
+    getServices
 }

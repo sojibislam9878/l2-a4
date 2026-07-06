@@ -14,10 +14,20 @@ import { categoryRoute } from "./modules/category/category.route";
 import { bookingRoute } from "./modules/booking/booking.route";
 import { reviewRoute } from "./modules/review/review.route";
 import { adminRoute } from "./modules/admin/admin.route";
+import { paymentRoute } from "./modules/payment/payment.route";
+import { paymentController } from "./modules/payment/payment.controller";
 import globalErrorHandler from "./middlewares/globalErrorHandler";
 const app: Application = express();
 
 app.use(cors({ origin: envConfig.app_url, credentials: true }));
+
+// Stripe webhook must receive the RAW body (registered before express.json())
+app.post(
+  "/api/payments/confirm",
+  express.raw({ type: "application/json" }),
+  paymentController.confirmPayment,
+);
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -35,6 +45,7 @@ app.use("/api/categories", categoryRoute);
 app.use("/api/bookings", bookingRoute);
 app.use("/api/reviews", reviewRoute);
 app.use("/api/admin", adminRoute);
+app.use("/api/payments", paymentRoute);
 
 app.use((_req: Request, res: Response) => {
   res.status(404).json({

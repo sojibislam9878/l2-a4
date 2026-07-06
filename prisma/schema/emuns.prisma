@@ -1,6 +1,6 @@
 enum ActiveStatus{
-    active
-    banned
+    unban
+    ban
 }
 enum Role{
     customer

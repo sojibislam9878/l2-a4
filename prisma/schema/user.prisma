@@ -5,7 +5,7 @@ model User {
     password String
     phone_no String? @db.VarChar(20)
     role Role @default(customer)
-    status ActiveStatus @default(active)
+    status ActiveStatus @default(unban)
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
     technician_profile TechnicianProfile?

@@ -4,85 +4,85 @@ import type { ActiveStatus } from "../../../generated/prisma/client";
 import type { ICategory } from "../category/category.interface";
 
 const userSelect = {
-    id: true,
-    name: true,
-    email: true,
-    phone_no: true,
-    role: true,
-    status: true,
-    createdAt: true,
-    updatedAt: true,
+  id: true,
+  name: true,
+  email: true,
+  phone_no: true,
+  role: true,
+  status: true,
+  createdAt: true,
+  updatedAt: true,
 };
 
 const getAllUsersDb = async () => {
-    const data = await prisma.user.findMany({
-        select: userSelect,
-        orderBy: { createdAt: "desc" },
-    });
+  const data = await prisma.user.findMany({
+    select: userSelect,
+    orderBy: { createdAt: "desc" },
+  });
 
-    return data;
+  return data;
 };
 
 const updateUserStatusDb = async (userId: string, status: ActiveStatus) => {
-    const user = await prisma.user.findUnique({ where: { id: userId } });
+  const user = await prisma.user.findUnique({ where: { id: userId } });
 
-    if (!user) {
-        throw new AppError(404, "User not found");
-    }
+  if (!user) {
+    throw new AppError(404, "User not found");
+  }
 
-    const result = await prisma.user.update({
-        where: { id: userId },
-        data: { status },
-        select: userSelect,
-    });
+  const result = await prisma.user.update({
+    where: { id: userId },
+    data: { status },
+    select: userSelect,
+  });
 
-    return result;
+  return result;
 };
 
 const getAllBookingsDb = async () => {
-    const data = await prisma.booking.findMany({
-        orderBy: { created_at: "desc" },
-        include: {
-            user: {
-                select: {
-                    id: true,
-                    name: true,
-                    email: true,
-                    phone_no: true,
-                },
-            },
-            technician: {
-                include: {
-                    user: {
-                        select: {
-                            id: true,
-                            name: true,
-                            email: true,
-                        },
-                    },
-                },
-            },
-            service: true,
+  const data = await prisma.booking.findMany({
+    orderBy: { created_at: "desc" },
+    include: {
+      user: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          phone_no: true,
         },
-    });
+      },
+      technician: {
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+            },
+          },
+        },
+      },
+      service: true,
+    },
+  });
 
-    return data;
+  return data;
 };
 
 const createCategoryDb = async (payload: ICategory) => {
-    const result = await prisma.category.create({
-        data: {
-            name: payload.name,
-            description: payload.description,
-        },
-    });
+  const result = await prisma.category.create({
+    data: {
+      name: payload.name,
+      description: payload.description,
+    },
+  });
 
-    return result;
+  return result;
 };
 
 export const adminService = {
-    getAllUsersDb,
-    updateUserStatusDb,
-    getAllBookingsDb,
-    createCategoryDb,
+  getAllUsersDb,
+  updateUserStatusDb,
+  getAllBookingsDb,
+  createCategoryDb,
 };

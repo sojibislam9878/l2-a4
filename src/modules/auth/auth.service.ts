@@ -36,16 +36,37 @@ const userLogInDB = async (payload: ILogInPayload) => {
 };
 
 const registerUserDB = async (payload: IRegisterUserPayload) => {
+  const { role, ...rest } = payload;
+
+  // only "customer" or "technician" can be chosen at registration
+  const allowedRoles = ["customer", "technician"];
+  if (role && !allowedRoles.includes(role)) {
+    throw new AppError(400, "Invalid role. Allowed: customer, technician");
+  }
+  const userRole = role ?? "customer";
+
   const hashedPassword = await bcrypt.hash(
     payload.password,
     Number(envConfig.bcrypt_salt_rounds),
   );
 
-  const result = await prisma.user.create({
-    data: {
-      ...payload,
-      password: hashedPassword,
-    },
+  const result = await prisma.$transaction(async (tx) => {
+    const user = await tx.user.create({
+      data: {
+        ...rest,
+        password: hashedPassword,
+        role: userRole,
+      },
+    });
+
+    // technicians get an empty profile to fill in later via PUT /technician/profile
+    if (userRole === "technician") {
+      await tx.technicianProfile.create({
+        data: { user_id: user.id },
+      });
+    }
+
+    return user;
   });
 
   const { password, ...userWithoutPassword } = result;

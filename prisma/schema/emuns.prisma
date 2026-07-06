@@ -13,3 +13,10 @@ enum Status {
     pending
     completed
 }
+
+enum BookingStatus {
+    pending
+    accepted
+    declined
+    completed
+}

@@ -13,6 +13,7 @@ import { technicianRoute, technicianManagementRoute } from "./modules/technician
 import { categoryRoute } from "./modules/category/category.route";
 import { bookingRoute } from "./modules/booking/booking.route";
 import { reviewRoute } from "./modules/review/review.route";
+import { adminRoute } from "./modules/admin/admin.route";
 import globalErrorHandler from "./middlewares/globalErrorHandler";
 const app: Application = express();
 
@@ -33,6 +34,7 @@ app.use("/api/technician", technicianManagementRoute);
 app.use("/api/categories", categoryRoute);
 app.use("/api/bookings", bookingRoute);
 app.use("/api/reviews", reviewRoute);
+app.use("/api/admin", adminRoute);
 
 app.use((_req: Request, res: Response) => {
   res.status(404).json({

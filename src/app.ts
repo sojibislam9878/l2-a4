@@ -36,6 +36,14 @@ app.get("/", (req: Request, res: Response) => {
   res.send("Hello World!");
 });
 
+app.get("/payment/success", (_req: Request, res: Response) => {
+  res.send("Payment successful");
+});
+
+app.get("/payment/cancel", (_req: Request, res: Response) => {
+  res.send("Payment unsuccessful");
+});
+
 app.use("/api/auth", authRoute);
 app.use("/api/users", userRoute);
 app.use("/api/services", serviceRoute);

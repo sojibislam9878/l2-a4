@@ -89,6 +89,24 @@ const markPaymentPaidDb = async (sessionId: string) => {
     });
 };
 
+const markPaymentFailedDb = async (sessionId: string) => {
+    const payment = await prisma.payment.findFirst({
+        where: { transaction_id: sessionId },
+    });
+
+    // don't overwrite an already completed payment
+    if (!payment || payment.status === "completed") {
+        return;
+    }
+
+    await prisma.payment.update({
+        where: { id: payment.id },
+        data: {
+            status: "failed",
+        },
+    });
+};
+
 const getUserPaymentsDb = async (customerId: string) => {
     const data = await prisma.payment.findMany({
         where: { booking: { customer_id: customerId } },
@@ -127,6 +145,7 @@ const getPaymentByIdDb = async (id: string, customerId: string) => {
 export const paymentService = {
     createPaymentDb,
     markPaymentPaidDb,
+    markPaymentFailedDb,
     getUserPaymentsDb,
     getPaymentByIdDb,
 };

@@ -36,9 +36,18 @@ const confirmPayment = async (req: Request, res: Response) => {
         return res.status(400).send("Webhook signature verification failed")
     }
 
-    if (event.type === "checkout.session.completed") {
-        const session = event.data.object as Stripe.Checkout.Session
-        await paymentService.markPaymentPaidDb(session.id)
+    switch (event.type) {
+        case "checkout.session.completed": {
+            const session = event.data.object as Stripe.Checkout.Session
+            await paymentService.markPaymentPaidDb(session.id)
+            break
+        }
+        case "checkout.session.expired":
+        case "checkout.session.async_payment_failed": {
+            const session = event.data.object as Stripe.Checkout.Session
+            await paymentService.markPaymentFailedDb(session.id)
+            break
+        }
     }
 
     res.status(200).json({ received: true })

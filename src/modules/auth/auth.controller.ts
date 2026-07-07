@@ -2,6 +2,7 @@ import type { NextFunction, Request, Response } from "express"
 import { authService } from "./auth.service"
 import envConfig from '../../config/envConfiq';
 import jwt, { type JwtPayload } from "jsonwebtoken"
+import { sendResponse } from "../../../utils/response"
 
 const userLogin = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -15,10 +16,10 @@ const userLogin = async (req: Request, res: Response, next: NextFunction) => {
             maxAge: 1000 * 60 * 60 * 24
         })
 
-        res.status(200).json({
-            status: 200,
+        sendResponse(res, {
+            statusCode: 200,
             message: "user login successfully",
-            data: userWithoutPassword
+            data: userWithoutPassword,
         })
     } catch (error) {
         next(error)
@@ -30,10 +31,10 @@ const registerUser = async (req: Request, res: Response, next: NextFunction) => 
         const payload = req.body;
         const result = await authService.registerUserDB(payload)
 
-        res.status(201).json({
-            status: 201,
+        sendResponse(res, {
+            statusCode: 201,
             message: "user created successfully",
-            data: result
+            data: result,
         })
     } catch (error) {
         next(error)
@@ -47,10 +48,10 @@ const getMe = async (req: Request, res: Response, next: NextFunction) => {
 
         const result = await authService.getMeDB(verifiedToken.id)
 
-        res.status(200).json({
-            status: 200,
+        sendResponse(res, {
+            statusCode: 200,
             message: "user fetched successfully",
-            data: result
+            data: result,
         })
     } catch (error) {
         next(error)

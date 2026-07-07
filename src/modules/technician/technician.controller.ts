@@ -3,6 +3,7 @@ import { technicianService } from "./technician.service";
 import type { ITechnicianFilters } from "./technician.interface";
 import type { BookingStatus } from "../../../generated/prisma/client";
 import AppError from "../../../utils/AppError";
+import { sendResponse } from "../../../utils/response";
 
 const getTechnicians = async (
   req: Request,
@@ -13,8 +14,8 @@ const getTechnicians = async (
     const filters = req.query as ITechnicianFilters;
     const result = await technicianService.getTechniciansFormDb(filters);
 
-    res.status(200).json({
-      status: 200,
+    sendResponse(res, {
+      statusCode: 200,
       message: "technicians fetched successfully",
       data: result,
     });
@@ -34,8 +35,8 @@ const getTechnicianById = async (
       id as string,
     );
 
-    res.status(200).json({
-      status: 200,
+    sendResponse(res, {
+      statusCode: 200,
       message: "technician fetched successfully",
       data: result,
     });
@@ -56,8 +57,8 @@ const updateProfile = async (
       req.body,
     );
 
-    res.status(200).json({
-      status: 200,
+    sendResponse(res, {
+      statusCode: 200,
       message: "technician profile updated successfully",
       data: result,
     });
@@ -75,8 +76,8 @@ const getTechnicianBookings = async (
     const userId = (req as Request & { user?: { id: string } }).user!.id;
     const result = await technicianService.getTechnicianBookingsDb(userId);
 
-    res.status(200).json({
-      status: 200,
+    sendResponse(res, {
+      statusCode: 200,
       message: "bookings fetched successfully",
       data: result,
     });
@@ -109,8 +110,8 @@ const updateBookingStatus = async (
       status,
     );
 
-    res.status(200).json({
-      status: 200,
+    sendResponse(res, {
+      statusCode: 200,
       message: "booking status updated successfully",
       data: result,
     });
@@ -129,8 +130,8 @@ const updateAvailability = async (
     const { slots } = req.body;
     const result = await technicianService.updateAvailabilityDb(userId, slots);
 
-    res.status(200).json({
-      status: 200,
+    sendResponse(res, {
+      statusCode: 200,
       message: "availability updated successfully",
       data: result,
     });

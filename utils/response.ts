@@ -2,22 +2,19 @@ import type { Response } from "express";
 
 interface ResponsePayload<T> {
     statusCode: number;
-    success: boolean;
+    success?: boolean;
     message: string;
     data?: T;
-    error?: unknown;
 }
 
-export const sendResponse = <T>(
-    res: Response,
-    payload: ResponsePayload<T>
-) => {
-    const { statusCode, success, message, data, error } = payload;
+export const sendResponse = <T>(res: Response, payload: ResponsePayload<T>) => {
+    const { statusCode, message, data } = payload;
+    const success = payload.success ?? statusCode < 400;
 
     res.status(statusCode).json({
         success,
+        statusCode,
         message,
         ...(data !== undefined && { data }),
-        ...(error !== undefined && { error }),
     });
 };

@@ -1,5 +1,6 @@
 import type { NextFunction, Request, Response } from "express"
 import { bookingService } from "./booking.service"
+import { sendResponse } from "../../../utils/response"
 
 const createBooking = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -7,8 +8,8 @@ const createBooking = async (req: Request, res: Response, next: NextFunction) =>
         const payload = req.body
         const result = await bookingService.createBookingDb(customerId, payload)
 
-        res.status(201).json({
-            status: 201,
+        sendResponse(res, {
+            statusCode: 201,
             message: "booking created successfully",
             data: result,
         })
@@ -22,8 +23,8 @@ const getMyBookings = async (req: Request, res: Response, next: NextFunction) =>
         const customerId = (req as Request & { user?: { id: string } }).user!.id
         const result = await bookingService.getUserBookingsDb(customerId)
 
-        res.status(200).json({
-            status: 200,
+        sendResponse(res, {
+            statusCode: 200,
             message: "bookings fetched successfully",
             data: result,
         })
@@ -38,8 +39,8 @@ const getBookingById = async (req: Request, res: Response, next: NextFunction) =
         const { id } = req.params
         const result = await bookingService.getBookingByIdDb(id as string, customerId)
 
-        res.status(200).json({
-            status: 200,
+        sendResponse(res, {
+            statusCode: 200,
             message: "booking fetched successfully",
             data: result,
         })

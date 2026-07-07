@@ -1,5 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 import { categoryService } from "./category.service";
+import { sendResponse } from "../../../utils/response";
 
 const getCategories = async (
   req: Request,
@@ -9,8 +10,8 @@ const getCategories = async (
   try {
     const result = await categoryService.getCategoriesFromDb();
 
-    res.status(200).json({
-      status: 200,
+    sendResponse(res, {
+      statusCode: 200,
       message: "categories fetched successfully",
       data: result,
     });

@@ -3,13 +3,14 @@ import { adminService } from "./admin.service";
 import { categoryService } from "../category/category.service";
 import type { ActiveStatus } from "../../../generated/prisma/client";
 import AppError from "../../../utils/AppError";
+import { sendResponse } from "../../../utils/response";
 
 const getAllUsers = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const result = await adminService.getAllUsersDb();
 
-    res.status(200).json({
-      status: 200,
+    sendResponse(res, {
+      statusCode: 200,
       message: "users fetched successfully",
       data: result,
     });
@@ -34,8 +35,8 @@ const updateUserStatus = async (
 
     const result = await adminService.updateUserStatusDb(id as string, status);
 
-    res.status(200).json({
-      status: 200,
+    sendResponse(res, {
+      statusCode: 200,
       message: "user status updated successfully",
       data: result,
     });
@@ -52,8 +53,8 @@ const getAllBookings = async (
   try {
     const result = await adminService.getAllBookingsDb();
 
-    res.status(200).json({
-      status: 200,
+    sendResponse(res, {
+      statusCode: 200,
       message: "bookings fetched successfully",
       data: result,
     });
@@ -70,8 +71,8 @@ const getAllCategories = async (
   try {
     const result = await categoryService.getCategoriesFromDb();
 
-    res.status(200).json({
-      status: 200,
+    sendResponse(res, {
+      statusCode: 200,
       message: "categories fetched successfully",
       data: result,
     });
@@ -88,8 +89,8 @@ const createCategory = async (
   try {
     const result = await adminService.createCategoryDb(req.body);
 
-    res.status(201).json({
-      status: 201,
+    sendResponse(res, {
+      statusCode: 201,
       message: "category created successfully",
       data: result,
     });

@@ -3,6 +3,7 @@ import type Stripe from "stripe"
 import { paymentService } from "./payment.service"
 import { stripe } from "../../lib/stripe"
 import envConfig from "../../config/envConfiq"
+import { sendResponse } from "../../../utils/response"
 
 const createPayment = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -11,8 +12,8 @@ const createPayment = async (req: Request, res: Response, next: NextFunction) =>
 
         const result = await paymentService.createPaymentDb(customerId, booking_id)
 
-        res.status(201).json({
-            status: 201,
+        sendResponse(res, {
+            statusCode: 201,
             message: "payment session created successfully",
             data: result,
         })
@@ -58,8 +59,8 @@ const getMyPayments = async (req: Request, res: Response, next: NextFunction) =>
         const customerId = (req as Request & { user?: { id: string } }).user!.id
         const result = await paymentService.getUserPaymentsDb(customerId)
 
-        res.status(200).json({
-            status: 200,
+        sendResponse(res, {
+            statusCode: 200,
             message: "payments fetched successfully",
             data: result,
         })
@@ -74,8 +75,8 @@ const getPaymentById = async (req: Request, res: Response, next: NextFunction) =
         const { id } = req.params
         const result = await paymentService.getPaymentByIdDb(id as string, customerId)
 
-        res.status(200).json({
-            status: 200,
+        sendResponse(res, {
+            statusCode: 200,
             message: "payment fetched successfully",
             data: result,
         })

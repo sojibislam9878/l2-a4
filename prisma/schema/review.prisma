@@ -1,12 +1,12 @@
 model Review {
     id String @id @default(uuid())
-    booking Booking @relation(fields: [booking_id], references: [id])
+    booking Booking @relation(fields: [booking_id], references: [id], onDelete: Cascade)
     booking_id String
-    user User @relation(fields: [customer_id], references: [id])
+    user User @relation(fields: [customer_id], references: [id], onDelete: Cascade)
     customer_id String
-    technician TechnicianProfile @relation(fields: [technician_id], references: [id])
+    technician TechnicianProfile @relation(fields: [technician_id], references: [id], onDelete: Cascade)
     technician_id String
-    service Service @relation(fields: [service_id], references: [id])
+    service Service @relation(fields: [service_id], references: [id], onDelete: Cascade)
     service_id String
     rating Int
     comment String

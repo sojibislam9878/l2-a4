@@ -1,6 +1,6 @@
 model TechnicianProfile {
     id String @id @default(uuid())
-    user User @relation(fields: [user_id], references: [id])
+    user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
     user_id String @unique 
     bio String?
     skills String? @db.VarChar(255)

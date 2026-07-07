@@ -1,6 +1,6 @@
 model Availability {
     id String @id @default(uuid())
-    technician TechnicianProfile @relation(fields: [technician_id], references: [id])
+    technician TechnicianProfile @relation(fields: [technician_id], references: [id], onDelete: Cascade)
     technician_id String
     day WeekDay
     start_time String @db.VarChar(5)

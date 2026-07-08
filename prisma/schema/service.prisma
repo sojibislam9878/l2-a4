@@ -6,7 +6,7 @@ model Service {
     category_id String
     title String @db.VarChar(255)
     description String
-    price Decimal @db.Decimal(8,0)
+    price Decimal @db.Decimal(8,2)
     created_at DateTime @default(now())
     booking Booking[]
     review Review[]

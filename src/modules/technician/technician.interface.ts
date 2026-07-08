@@ -11,7 +11,7 @@ export interface ITechnicianFilters {
 
 export interface IUpdateTechnicianProfilePayload {
     bio?: string;
-    skills?: string;
+    skills?: string[];
     experience_year?: number;
     hourly_rate?: number;
 }

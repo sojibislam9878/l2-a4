@@ -51,7 +51,7 @@ const getTechniciansFormDb = async (filters: ITechnicianFilters) => {
   if (searchTerm) {
     andConditions.push({
       OR: [
-        { skills: { contains: searchTerm, mode: "insensitive" } },
+        { skills: { has: searchTerm } },
         { bio: { contains: searchTerm, mode: "insensitive" } },
         { user: { name: { contains: searchTerm, mode: "insensitive" } } },
         { user: { email: { contains: searchTerm, mode: "insensitive" } } },
@@ -61,7 +61,7 @@ const getTechniciansFormDb = async (filters: ITechnicianFilters) => {
 
   if (skills) {
     andConditions.push({
-      skills: { contains: skills, mode: "insensitive" },
+      skills: { has: skills },
     });
   }
 
@@ -110,14 +110,6 @@ const getTechniciansFormDb = async (filters: ITechnicianFilters) => {
           role: true,
           status: true,
         },
-      },
-      availability: {
-        select: {
-          day: true,
-          start_time: true,
-          end_time: true,
-        },
-        orderBy: [{ day: "asc" }, { start_time: "asc" }],
       },
     },
   });

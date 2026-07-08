@@ -3,7 +3,7 @@ model TechnicianProfile {
     user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
     user_id String @unique 
     bio String?
-    skills String? @db.VarChar(255)
+    skills String[]
     experience_year Int?
     hourly_rate Decimal? @db.Decimal(8,2)
     createdAt DateTime @default(now())

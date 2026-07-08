@@ -8,10 +8,15 @@ const createBookingDb = async (
 ) => {
   const service = await prisma.service.findUnique({
     where: { id: payload.service_id },
+    include: { technician: true },
   });
 
   if (!service) {
     throw new AppError(404, "Service not found");
+  }
+
+  if (service.technician.user_id === customerId) {
+    throw new AppError(400, "You cannot book your own service");
   }
 
   const result = await prisma.booking.create({
@@ -32,20 +37,6 @@ const getUserBookingsDb = async (customerId: string) => {
   const data = await prisma.booking.findMany({
     where: { customer_id: customerId },
     orderBy: { created_at: "desc" },
-    include: {
-      technician: {
-        include: {
-          user: {
-            select: {
-              id: true,
-              name: true,
-              email: true,
-            },
-          },
-        },
-      },
-      service: true,
-    },
   });
 
   return data;

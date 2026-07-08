@@ -1,10 +1,12 @@
 import type { NextFunction, Request, Response } from "express"
 import { servicesService } from "./service.service"
 import { sendResponse } from "../../../utils/response"
+import type { IServiceFilters } from "./service.interface"
 
 const getServices = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const result = await servicesService.getServicesFromDb()
+        const filters = req.query as IServiceFilters
+        const result = await servicesService.getServicesFromDb(filters)
 
         sendResponse(res, {
             statusCode: 200,

@@ -113,6 +113,25 @@ const getMeDB = async (userId: string) => {
   }
 
   const { password, ...userWithoutPassword } = user;
+
+  if (user.role === "technician") {
+    const technician_profile = await prisma.technicianProfile.findUnique({
+      where: { user_id: userId },
+      include: {
+        availability: {
+          select: {
+            day: true,
+            start_time: true,
+            end_time: true,
+          },
+          orderBy: [{ day: "asc" }, { start_time: "asc" }],
+        },
+      },
+    });
+
+    return { ...userWithoutPassword, technician_profile };
+  }
+
   return userWithoutPassword;
 };
 

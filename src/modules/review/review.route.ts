@@ -5,6 +5,6 @@ import authorize from "../../middlewares/authorize";
 
 const router = Router()
 
-router.post("/", auth, authorize("customer"), reviewController.createReview)
+router.post("/", auth, authorize("customer", "technician"), reviewController.createReview)
 
 export const reviewRoute = router

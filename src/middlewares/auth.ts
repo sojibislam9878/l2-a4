@@ -30,6 +30,13 @@ const auth = async (req: Request, res: Response, next: NextFunction) => {
       });
     }
 
+    if (user.status === "ban") {
+      return res.status(403).json({
+        status: 403,
+        message: "Your account is banned. You cannot perform this action.",
+      });
+    }
+
     (req as Request & { user?: typeof user }).user = user;
     next();
   } catch (error) {

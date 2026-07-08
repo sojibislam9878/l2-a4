@@ -30,6 +30,13 @@ const adminAuth = async (req: Request, res: Response, next: NextFunction) => {
       });
     }
 
+    if (user.status === "ban") {
+      return res.status(403).json({
+        status: 403,
+        message: "Your account is banned. You cannot perform this action.",
+      });
+    }
+
     if (user.role !== "admin") {
       return res.status(403).json({
         status: 403,

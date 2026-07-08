@@ -7,7 +7,6 @@ import type { SignOptions } from "jsonwebtoken";
 import AppError from "../../../utils/AppError";
 import type { WeekDay } from "../../../generated/prisma/client";
 
-// default weekly schedule given to a technician on registration (Sun–Thu, 9am–5pm)
 const defaultAvailability: {
   day: WeekDay;
   start_time: string;
@@ -50,9 +49,16 @@ const userLogInDB = async (payload: ILogInPayload) => {
 };
 
 const registerUserDB = async (payload: IRegisterUserPayload) => {
-  const { role, ...rest } = payload;
+  const allowedFields = ["name", "email", "phone_no", "password", "role"];
+  const extraFields = Object.keys(payload).filter(
+    (key) => !allowedFields.includes(key),
+  );
+  if (extraFields.length > 0) {
+    throw new AppError(400, `Unknown field(s): ${extraFields.join(", ")}`);
+  }
 
-  // only "customer" or "technician" can be chosen at registration
+  const { name, email, phone_no, password, role } = payload;
+
   const allowedRoles = ["customer", "technician"];
   if (role && !allowedRoles.includes(role)) {
     throw new AppError(400, "Invalid role. Allowed: customer, technician");
@@ -60,20 +66,21 @@ const registerUserDB = async (payload: IRegisterUserPayload) => {
   const userRole = role ?? "customer";
 
   const hashedPassword = await bcrypt.hash(
-    payload.password,
+    password,
     Number(envConfig.bcrypt_salt_rounds),
   );
 
   const result = await prisma.$transaction(async (tx) => {
     const user = await tx.user.create({
       data: {
-        ...rest,
+        name,
+        email,
+        phone_no,
         password: hashedPassword,
         role: userRole,
       },
     });
 
-    // technicians get an empty profile + a default weekly schedule to edit later
     if (userRole === "technician") {
       const profile = await tx.technicianProfile.create({
         data: { user_id: user.id },
@@ -90,7 +97,7 @@ const registerUserDB = async (payload: IRegisterUserPayload) => {
     return user;
   });
 
-  const { password, ...userWithoutPassword } = result;
+  const { password: _password, ...userWithoutPassword } = result;
   return userWithoutPassword;
 };
 

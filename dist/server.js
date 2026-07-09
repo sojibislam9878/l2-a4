@@ -1790,9 +1790,9 @@ var globalErrorHandler = (err, req, res, next) => {
   }
   console.log(err);
   res.status(statusCode).json({
-    status: statusCode,
+    success: false,
     message,
-    error: err
+    errorDetails: err
   });
 };
 var globalErrorHandler_default = globalErrorHandler;

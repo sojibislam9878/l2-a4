@@ -89,7 +89,7 @@ A backend REST API for an on-demand **home-service / technician booking platform
 **Enums**
 - `Role`: `customer | technician | admin`
 - `ActiveStatus`: `unban | ban`
-- `BookingStatus`: `pending | accept | decline | complete`
+- `BookingStatus`: `pending | accept | decline | in_progress | complete`
 - `Status` (payment): `pending | completed | failed`
 - `WeekDay`: `sunday | monday | tuesday | wednesday | thursday | friday | saturday`
 
@@ -183,9 +183,9 @@ APP_URL="http://localhost:8000"
 **Error**
 ```json
 {
-  "status": 400,
+  "success": false,
   "message": "what went wrong",
-  "error": { }
+  "errorDetails": { }
 }
 ```
 

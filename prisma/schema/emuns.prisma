@@ -18,6 +18,7 @@ enum BookingStatus {
     pending
     accept
     decline
+    in_progress
     complete
 }
 
